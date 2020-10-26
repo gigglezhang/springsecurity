@@ -1,0 +1,10 @@
+server:
+  port: 9090
+
+
+spring:
+  datasource:
+    username: crmuser
+    password: crmuser
+    url: jdbc:mysql://10.1.21.56:3306/oauth2?characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
