@@ -1,0 +1,13 @@
+server:
+  port: 8090
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: oauth2
+          uri: http://localhost:9090
+          predicates:
+           - Path=/token/**
+          filters:
+            - StripPrefix=1  # 取消oauth2作为转发前缀

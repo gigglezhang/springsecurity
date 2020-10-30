@@ -26,6 +26,7 @@ public class WebSercurityConfig extends WebSecurityConfigurerAdapter {
         remoteTokenServices.setAccessTokenConverter(accessTokenConverter());
         return remoteTokenServices;
     }
+
     private AccessTokenConverter accessTokenConverter(){
         DefaultAccessTokenConverter defaultAccessTokenConverter = new DefaultAccessTokenConverter();;
 
