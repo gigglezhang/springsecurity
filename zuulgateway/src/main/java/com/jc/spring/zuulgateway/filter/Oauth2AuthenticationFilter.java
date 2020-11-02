@@ -48,7 +48,7 @@ public class Oauth2AuthenticationFilter extends ZuulFilter {
 
     @Override
     public Object run() throws ZuulException {
-        log.info("authentication start");
+        log.info("Authorization start");
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
         String uri = request.getRequestURI();
@@ -62,7 +62,7 @@ public class Oauth2AuthenticationFilter extends ZuulFilter {
             return null;
         }
         // 如果不是bearer 类型的也不做认证 ps: 流程是认证都会往后走
-        if(!StringUtils.startsWithIgnoreCase(authorization, "bearer ")){
+        if(!StringUtils.startsWithIgnoreCase(authorization, "Bearer ")){
             return  null;
         }
         try {
@@ -77,17 +77,24 @@ public class Oauth2AuthenticationFilter extends ZuulFilter {
 
     private TokenInfo getTokenInfo(String authHeader){
         String url = "http://localhost:9090/oauth/check_token";
-        String token = StringUtils.substringAfter(authHeader, "bearer ");
+        String token = StringUtils.substringAfter(authHeader, "Bearer ");
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        // 这个要加
+        httpHeaders.setBasicAuth("gateway","123456");
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+
         multiValueMap.add("token", token);
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(multiValueMap,httpHeaders);
         ResponseEntity<TokenInfo> responseEntity  = restTemplate.exchange(url, HttpMethod.POST,httpEntity,TokenInfo.class);
         TokenInfo tokenInfo = null;
         if(responseEntity.getStatusCode().equals(HttpStatus.OK)){
             tokenInfo = responseEntity.getBody();
+            if (tokenInfo != null){
+                log.info(tokenInfo.toString());
+            }
         }
+
         return tokenInfo;
     }
 

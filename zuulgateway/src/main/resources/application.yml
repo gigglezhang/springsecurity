@@ -5,3 +5,9 @@ zuul:
     order:
       url: http://127.0.0.1:8001
   sensitive-headers:  # 不设置敏感头
+server:
+  port: 8080
+
+spring:
+  application:
+    name: zuulgateway
