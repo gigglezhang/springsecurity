@@ -12,6 +12,9 @@ import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author jincheng.zhang
+ */
 @Component
 @Primary
 @Slf4j
@@ -26,9 +29,9 @@ public class DocumentationConfig implements SwaggerResourcesProvider {
         List<SwaggerResource> resources = new ArrayList<>();
         List<Route> routes = routeLocator.getRoutes();
         routes.stream().filter(route -> !"token".equals(route.getId())).forEach(route -> {
-            log.warn("fullpath: {},location: {}",route.getFullPath(), route.getLocation());
+            log.info("fullpath: {},location: {}",route.getFullPath(), route.getLocation());
             resources.add(swaggerResource(route.getId(),
-                    route.getFullPath().replace("/**", "/v3/api-docs"),"1.0"));
+                    route.getFullPath().replace("/**", "/v2/api-docs"),"1.0"));
         });
 
         return resources;

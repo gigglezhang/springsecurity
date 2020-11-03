@@ -11,3 +11,7 @@ spring:
            - Path=/token/**
           filters:
             - StripPrefix=1  # 取消oauth2作为转发前缀
+        - id: order
+          uri: http://localhost:8001
+          predicates:
+            - Path=/order/**

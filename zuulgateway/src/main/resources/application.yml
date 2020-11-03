@@ -4,7 +4,9 @@ zuul:
       url: http://127.0.0.1:9090
     order:
       url: http://127.0.0.1:8001
+      strip-prefix: false
   sensitive-headers:  # 不设置敏感头
+
 server:
   port: 8080
 

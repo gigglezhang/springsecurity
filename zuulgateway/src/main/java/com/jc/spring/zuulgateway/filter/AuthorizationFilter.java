@@ -91,7 +91,7 @@ public class AuthorizationFilter extends ZuulFilter {
         || StringUtils.contains(request.getRequestURI(), "/api-docs")){
             return false;
         }else {
-            return false;
+            return true;
         }
     }
 }
