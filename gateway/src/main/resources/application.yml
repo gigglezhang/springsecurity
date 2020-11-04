@@ -15,3 +15,8 @@ spring:
           uri: http://localhost:8001
           predicates:
             - Path=/order/**
+  application:
+    name: gateway
+logging:
+  level:
+    com.jc.spring.gateway.feignapi.Oauth2Api: debug

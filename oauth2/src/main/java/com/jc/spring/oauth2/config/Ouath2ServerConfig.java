@@ -46,19 +46,19 @@ public class Ouath2ServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory()
-                .withClient("orderApp")
-                .secret(passwordEncoder.encode("123456"))
-                .scopes("read","write")
-                .accessTokenValiditySeconds(3600)
-                // 这个代表资源服务器的Id
-                .resourceIds("order-server")
-                .and()
-                .withClient("orderServer")
-                .secret(passwordEncoder.encode("123456"))
-                .scopes("read")
-                .accessTokenValiditySeconds(3600)
-                .resourceIds("order-server");
+//        clients.inMemory()
+//                .withClient("orderApp")
+//                .secret(passwordEncoder.encode("123456"))
+//                .scopes("read","write")
+//                .accessTokenValiditySeconds(3600)
+//                // 这个代表资源服务器的Id
+//                .resourceIds("order-server")
+//                .and()
+//                .withClient("orderServer")
+//                .secret(passwordEncoder.encode("123456"))
+//                .scopes("read")
+//                .accessTokenValiditySeconds(3600)
+//                .resourceIds("order-server");
         clients.jdbc(dataSource);
     }
 
