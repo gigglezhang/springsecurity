@@ -4,8 +4,29 @@ zuul:
       url: http://127.0.0.1:9090
     order:
       url: http://127.0.0.1:8001
-      strip-prefix: false
+#      strip-prefix: false
   sensitive-headers:  # 不设置敏感头
+  ratelimit:
+    enabled: true # 开启限流
+    repository: redis
+    default-policy-list:
+      - limit: 2 # 限制数
+        quota: 1 # 总请求消耗时间     ------->  以 limit为2 refresh-interval:1 代表一秒内请求次数为2， quota为1表示请求（不管是一次或者两次）所耗费时间不能超过1
+        refresh-interval: 3 # 时间窗口
+        type:  # 根据啥控制流量
+          - url
+          - httpmethod
+#          - user  用户
+#          - origin  ip
+#    policy-list:
+#      token:
+#        - limit: 2
+#          quota: 1
+#          refresh-interval: 3
+#          type:
+#            - url
+#            - httpmethod
+
 
 server:
   port: 8080
@@ -13,3 +34,14 @@ server:
 spring:
   application:
     name: zuulgateway
+  redis:
+    host: 10.1.21.56
+    port: 6379
+    timeout: 10s
+    lettuce:
+      pool:
+        max-active: 9
+        max-idle: 8
+        min-idle: 2
+    password: fubon
+    database: 1

@@ -15,8 +15,27 @@ spring:
           uri: http://localhost:8001
           predicates:
             - Path=/order/**
+          filters:
+            - StripPrefix=1
+      default-filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 1
+            redis-rate-limiter.burstCapacity: 1
+            key-resolver: "#{@ipKeyResolver}"
   application:
     name: gateway
+  redis:
+    host: 10.1.21.56
+    port: 6379
+    timeout: 10s
+    lettuce:
+      pool:
+        max-active: 9
+        max-idle: 8
+        min-idle: 2
+    password: fubon
+    database: 1
 logging:
   level:
     com.jc.spring.gateway.feignapi.Oauth2Api: debug

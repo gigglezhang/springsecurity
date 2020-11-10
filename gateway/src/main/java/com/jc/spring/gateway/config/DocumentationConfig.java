@@ -22,8 +22,6 @@ import java.util.List;
 @Primary
 @Slf4j
 public class DocumentationConfig implements SwaggerResourcesProvider {
-    @Autowired
-    private RouteLocator routeLocator;
 
     @Autowired
     private GatewayProperties gatewayProperties;
