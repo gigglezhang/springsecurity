@@ -8,6 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -42,7 +47,9 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         }
         try {
             TokenInfo tokenInfo = getTokenInfo(authorization);
-            exchange.getAttributes().put("tokenInfo",tokenInfo);
+//            exchange.getAttributes().put("tokenInfo",tokenInfo);
+            ServerHttpRequest serverHttpRequest = exchange.getRequest().mutate().header("username", tokenInfo.getUser_name()).build();
+            return chain.filter(exchange.mutate().request(serverHttpRequest).build());
         } catch (Exception e) {
             log.error(e.getMessage());
             e.printStackTrace();
@@ -54,8 +61,11 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     private TokenInfo getTokenInfo(String authorization) {
         String token = StringUtils.substringAfter(authorization, "Bearer ");
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
-
         multiValueMap.add("token", token);
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//        httpHeaders.set("aaa","11");
+//        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(multiValueMap,httpHeaders);
         return oauth2Api.getTokenInfo(multiValueMap);
     }
 

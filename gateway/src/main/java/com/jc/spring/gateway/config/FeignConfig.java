@@ -14,6 +14,8 @@ public class FeignConfig {
     public BasicAuthRequestInterceptor basicAuthRequestInterceptor(){
         return new BasicAuthRequestInterceptor("gateway","123456");
     }
+
+
     @Bean
     Logger.Level feignLoggerLevel() {
         //这里记录所有，根据实际情况选择合适的日志level
