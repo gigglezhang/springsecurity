@@ -9,6 +9,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author jincheng.zhang
+ */
 @Component
 public class UserDetailServiceImpl implements UserDetailsService {
     @Autowired
