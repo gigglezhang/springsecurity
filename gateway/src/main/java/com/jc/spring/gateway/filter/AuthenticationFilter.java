@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono;
 /**
  * @author jincheng.zhang
  */
-@Component
+//@Component
 @Slf4j
 public class AuthenticationFilter implements GlobalFilter, Ordered {
 

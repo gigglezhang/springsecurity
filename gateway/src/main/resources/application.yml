@@ -36,6 +36,15 @@ spring:
         min-idle: 2
     password: fubon
     database: 1
+
+  security:
+    oauth2:
+      client:
+
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9090/ouath
 logging:
   level:
     com.jc.spring.gateway.feignapi.Oauth2Api: debug
+

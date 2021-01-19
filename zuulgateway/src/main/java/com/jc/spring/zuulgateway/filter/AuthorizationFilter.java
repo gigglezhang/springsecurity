@@ -87,11 +87,7 @@ public class AuthorizationFilter extends ZuulFilter {
     }
 
     private boolean isNeedAuth(HttpServletRequest request) {
-        if(StringUtils.contains(request.getRequestURI(),"/swagger")
-        || StringUtils.contains(request.getRequestURI(), "/api-docs")){
-            return false;
-        }else {
-            return true;
-        }
+        return !StringUtils.contains(request.getRequestURI(), "/swagger")
+                && !StringUtils.contains(request.getRequestURI(), "/api-docs");
     }
 }

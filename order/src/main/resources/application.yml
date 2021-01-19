@@ -3,3 +3,11 @@ server:
 #  servlet:
 #    context-path: /order
 
+security:
+  oauth2:
+    client:
+      client-secret: 123456
+      client-id: gateway
+    resource:
+      jwt:
+        key-uri: http://localhost:9090/ouath
