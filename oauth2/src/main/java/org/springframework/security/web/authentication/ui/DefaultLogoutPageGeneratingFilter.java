@@ -10,7 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,7 +23,8 @@ import java.util.stream.Collectors;
 public class DefaultLogoutPageGeneratingFilter extends OncePerRequestFilter {
     private RequestMatcher matcher = new AntPathRequestMatcher("/logout", "GET");
 
-    private Function<HttpServletRequest, Map<String, String>> resolveHiddenInputs = request -> Collections.emptyMap();
+    private Function<HttpServletRequest, Map<String, String>> resolveHiddenInputs = request -> request
+            .getParameterMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e ->e.getValue()[0]));
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -47,7 +47,7 @@ public class DefaultLogoutPageGeneratingFilter extends OncePerRequestFilter {
                 + "    <meta name=\"description\" content=\"\">\n"
                 + "    <meta name=\"author\" content=\"\">\n"
                 + "    <title>Confirm Log Out?</title>\n"
-                + "    <link href=\"https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.min.css\" rel=\"stylesheet\">\n"
+                + "    <link href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M\" crossorigin=\"anonymous\">\n"
                 + "    <link href=\"https://getbootstrap.com/docs/4.0/examples/signin/signin.css\" rel=\"stylesheet\" crossorigin=\"anonymous\"/>\n"
                 + "  </head>\n"
                 + "  <body>\n"
@@ -55,7 +55,6 @@ public class DefaultLogoutPageGeneratingFilter extends OncePerRequestFilter {
                 + "      <form class=\"form-signin\" method=\"post\" action=\"" + request.getContextPath() + "/logout\">\n"
                 + "        <h2 class=\"form-signin-heading\">Are you sure you want to log out?</h2>\n"
                 + renderHiddenInputs(request)
-                + "        <input type=\"hidden\" name=\"redirect_uri\" value=\""+ request.getParameter("redirect_uri") +"\"/>\n"
                 + "        <button class=\"btn btn-lg btn-primary btn-block\" type=\"submit\">Log Out</button>\n"
                 + "      </form>\n"
                 + "    </div>\n"

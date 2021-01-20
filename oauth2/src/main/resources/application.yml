@@ -4,7 +4,19 @@ server:
 
 spring:
   datasource:
-    username: crmuser
-    password: crmuser
-    url: jdbc:mysql://10.1.21.56:3306/oauth2?characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: qQ598885407
+    url: jdbc:mysql://192.168.31.198:3306/oauth2?characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      auto-commit: true
+      #空闲连接超时时长
+      idle-timeout: 60000
+      #连接超时时长
+      connection-timeout: 60000
+      #最大生命周期，0不过期
+      max-lifetime: 0
+      #最小空闲连接数
+      minimum-idle: 2
+      #最大连接数量
+      maximum-pool-size: 10

@@ -39,7 +39,7 @@ spring:
 
 
   redis:
-    host: 10.1.21.56
+    host: 192.168.31.198
     port: 6379
     timeout: 10s
     lettuce:
@@ -47,9 +47,11 @@ spring:
         max-active: 9
         max-idle: 8
         min-idle: 2
-    password: Fb12345.
+    password: qQ598885407
     database: 1
 
+
+#    database: 1
 logging:
   level:
     root: INFO
