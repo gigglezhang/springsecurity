@@ -62,7 +62,7 @@ public class Ouath2ServerConfig extends AuthorizationServerConfigurerAdapter {
         // 验证token时需要的认证，带上orderApp 密码123456
         security.checkTokenAccess("isAuthenticated()")
                 // 通过认证拿到tokenkey
-                .checkTokenAccess("isAuthenticated()");
+                .tokenKeyAccess("isAuthenticated()");
     }
 
     @Override

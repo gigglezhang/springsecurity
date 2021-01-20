@@ -11,11 +11,17 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
  */
 
 
-//@EnableWebFluxSecurity
+@EnableWebFluxSecurity
 public class GatewaySecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+        http.authorizeExchange()
+                .pathMatchers("/token/**").permitAll()
+                .anyExchange().authenticated()
+                .and()
+            .oauth2ResourceServer().jwt();
+
         return http.build();
     }
 

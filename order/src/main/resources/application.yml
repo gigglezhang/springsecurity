@@ -10,4 +10,4 @@ security:
       client-id: gateway
     resource:
       jwt:
-        key-uri: http://localhost:9090/ouath
+        key-uri: http://localhost:9090/oauth/token_key

@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.stream.Collectors;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 /**
  * @author jincheng.zhang
  */
-@EnableFeignClients
+
 @SpringBootApplication
 public class GatewayApplication {
     public static void main(String[] args) {
