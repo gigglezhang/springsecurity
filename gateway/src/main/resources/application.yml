@@ -36,7 +36,7 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:9090/oauth/token_key
-
+          public-key-location:
 
   redis:
     host: 10.1.21.56
