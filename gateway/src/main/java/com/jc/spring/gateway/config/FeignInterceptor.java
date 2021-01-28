@@ -2,8 +2,7 @@ package com.jc.spring.gateway.config;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
-
-import java.util.UUID;
+import org.springframework.http.HttpHeaders;
 
 /**
  * @author jincheng.zhang
@@ -11,6 +10,6 @@ import java.util.UUID;
 public class FeignInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate requestTemplate) {
-        requestTemplate.header("testAdd", UUID.randomUUID().toString());
+        
     }
 }
