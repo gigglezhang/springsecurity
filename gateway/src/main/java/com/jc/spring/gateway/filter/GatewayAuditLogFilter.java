@@ -1,6 +1,9 @@
 package com.jc.spring.gateway.filter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -9,6 +12,9 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author jincheng.zhang
@@ -29,8 +35,14 @@ public class GatewayAuditLogFilter implements WebFilter {
                 })
                 .then(chain.filter(exchange)
                         .then(Mono.defer(() -> {
-                            log.info("after long -----------"); return Mono.empty();
-                        })));
+                                    List<String> values = exchange.getRequest().getHeaders().get("updated");
+                                    if (values == null || values.isEmpty()) {
+                                        log.info("after log -----------");
+                                    }
+                                    return Mono.empty();
+                                })
+                        )
+                );
 
 
     }

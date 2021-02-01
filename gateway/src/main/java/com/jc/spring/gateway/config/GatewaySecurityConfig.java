@@ -1,13 +1,13 @@
 package com.jc.spring.gateway.config;
 
 import com.jc.spring.gateway.bean.PublicKeyInfo;
+import com.jc.spring.gateway.component.GatewayAuthenticationEntryPoint;
+import com.jc.spring.gateway.component.Oauth2AccessDeniedHandler;
 import com.jc.spring.gateway.component.MyReactiveAuthorizationManager;
 import com.jc.spring.gateway.feignapi.Oauth2Api;
 import com.jc.spring.gateway.filter.GatewayAuditLogFilter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
@@ -35,11 +35,12 @@ public class GatewaySecurityConfig {
 
 
 
-    private Oauth2Api oauth2Api;
+    private final Oauth2Api oauth2Api;
 
-    private MyReactiveAuthorizationManager myReactiveAuthorizationManager;
+    private final MyReactiveAuthorizationManager myReactiveAuthorizationManager;
 
-
+    private final Oauth2AccessDeniedHandler oauth2AccessDeniedHandler;
+    private final GatewayAuthenticationEntryPoint gatewayAuthenticationEntryPoint;
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http.csrf().disable()
@@ -47,9 +48,14 @@ public class GatewaySecurityConfig {
                 .pathMatchers("/token/**").permitAll()
                 .anyExchange().access(myReactiveAuthorizationManager)
                 .and()
+
             .addFilterBefore(new GatewayAuditLogFilter(), SecurityWebFiltersOrder.EXCEPTION_TRANSLATION)
-            .oauth2ResourceServer(oAuth2ResourceServerSpec ->
-                    oAuth2ResourceServerSpec.jwt(jwtSpec -> jwtSpec.jwtDecoder(jwtDecoder()))
+            .oauth2ResourceServer(oAuth2ResourceServerSpec ->{
+                    oAuth2ResourceServerSpec.jwt(jwtSpec -> jwtSpec.jwtDecoder(jwtDecoder()));
+                    oAuth2ResourceServerSpec.authenticationEntryPoint(gatewayAuthenticationEntryPoint);
+                    oAuth2ResourceServerSpec.accessDeniedHandler(oauth2AccessDeniedHandler);
+
+                }
             );
 
 

@@ -1,7 +1,9 @@
 package com.jc.spring.gateway.component;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.core.Authentication;
@@ -9,8 +11,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.security.auth.login.CredentialNotFoundException;
 import java.util.Arrays;
 
 /**
@@ -26,6 +30,7 @@ public class MyReactiveAuthorizationManager implements ReactiveAuthorizationMana
 //        PathMatcher pathMatcher = new AntPathMatcher();
 
         // 打印下
+
         return mono
                 // 需要认证通过
                 .filter(Authentication::isAuthenticated)
@@ -44,9 +49,10 @@ public class MyReactiveAuthorizationManager implements ReactiveAuthorizationMana
                 .all(roleId -> {
                     log.info("roleId {}", roleId);
                     log.info("path {}", path);
-                    // 先都通过
-                    return true;
+                    // 随机通过
+                    return RandomUtils.nextInt() %2 == 0;
                 }).map(AuthorizationDecision::new).defaultIfEmpty(new AuthorizationDecision(false));
+
 
     }
 

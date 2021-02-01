@@ -59,7 +59,7 @@ logging:
     org.springframework.security: INFO
     org.springframework.security.oauth2: INFO
     org.springframework.cloud.gateway: INFO
-
+    com.jc.spring.gateway: debug
 
 #security:
 #  oauth2:
