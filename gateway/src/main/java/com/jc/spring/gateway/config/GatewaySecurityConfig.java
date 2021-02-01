@@ -1,11 +1,16 @@
 package com.jc.spring.gateway.config;
 
 import com.jc.spring.gateway.bean.PublicKeyInfo;
+import com.jc.spring.gateway.component.MyReactiveAuthorizationManager;
 import com.jc.spring.gateway.feignapi.Oauth2Api;
+import com.jc.spring.gateway.filter.GatewayAuditLogFilter;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
@@ -25,19 +30,24 @@ import java.security.spec.X509EncodedKeySpec;
 
 @EnableWebFluxSecurity
 @Slf4j
+@AllArgsConstructor
 public class GatewaySecurityConfig {
 
 
-    @Autowired
-    Oauth2Api oauth2Api;
+
+    private Oauth2Api oauth2Api;
+
+    private MyReactiveAuthorizationManager myReactiveAuthorizationManager;
+
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http.csrf().disable()
                 .authorizeExchange()
                 .pathMatchers("/token/**").permitAll()
-                .anyExchange().authenticated()
+                .anyExchange().access(myReactiveAuthorizationManager)
                 .and()
+            .addFilterBefore(new GatewayAuditLogFilter(), SecurityWebFiltersOrder.EXCEPTION_TRANSLATION)
             .oauth2ResourceServer(oAuth2ResourceServerSpec ->
                     oAuth2ResourceServerSpec.jwt(jwtSpec -> jwtSpec.jwtDecoder(jwtDecoder()))
             );
@@ -49,6 +59,7 @@ public class GatewaySecurityConfig {
 
     @Bean
     ReactiveJwtDecoder jwtDecoder(){
+
 //        Mono<String> publicKey = WebClient.create(uri)
 //                .get()
 //                .headers(httpHeaders -> httpHeaders.setBasicAuth("gateway","123456"))
