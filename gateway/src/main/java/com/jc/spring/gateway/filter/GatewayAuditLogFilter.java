@@ -26,7 +26,11 @@ public class GatewayAuditLogFilter implements WebFilter {
                         log.info("user jwt is : {}", jwt.getClaims());
                     }
                     return Mono.empty();
-                }).then(chain.filter(exchange));
+                })
+                .then(chain.filter(exchange)
+                        .then(Mono.defer(() -> {
+                            log.info("after long -----------"); return Mono.empty();
+                        })));
 
 
     }
