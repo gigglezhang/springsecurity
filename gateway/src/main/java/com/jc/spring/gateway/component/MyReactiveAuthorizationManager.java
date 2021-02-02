@@ -1,8 +1,11 @@
 package com.jc.spring.gateway.component;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
@@ -15,7 +18,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.security.auth.login.CredentialNotFoundException;
+import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author jincheng.zhang
@@ -25,36 +30,13 @@ import java.util.Arrays;
 public class MyReactiveAuthorizationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
     @Override
     public Mono<AuthorizationDecision> check(Mono<Authentication> mono, AuthorizationContext authorizationContext) {
-        ServerHttpRequest request = authorizationContext.getExchange().getRequest();
-        String path = request.getURI().getPath();
-//        PathMatcher pathMatcher = new AntPathMatcher();
-
-        // 打印下
-
         return mono
-                // 需要认证通过
-                .filter(Authentication::isAuthenticated)
-                // 答应
-                .flatMapIterable(authentication -> {
-                    log.info(Arrays.toString(authentication.getAuthorities().toArray()));
-                    Jwt jwt = (Jwt) authentication.getPrincipal();
-                    log.info(jwt.getClaimAsString("authorities"));
-                    return authentication.getAuthorities();
-                })
-                .map(a ->{
-                    log.info(a.getAuthority());
-                    return a.getAuthority();
-                })
-                // 转换成Mono<boolean>  条件是所有都满足
-                .all(roleId -> {
-                    log.info("roleId {}", roleId);
-                    log.info("path {}", path);
-                    // 随机通过
-                    return RandomUtils.nextInt() %2 == 0;
-                }).map(AuthorizationDecision::new).defaultIfEmpty(new AuthorizationDecision(false));
-
-
+            .filter(authentication -> authentication.isAuthenticated() && authentication.getPrincipal() instanceof Jwt)
+            .flatMap(authentication -> Mono.just(new AuthorizationDecision(false)))
+            .switchIfEmpty( Mono.defer( () -> {
+                log.debug("Authentication is empty");
+                return Mono.just(new AuthorizationDecision(false));
+            }));
     }
-
 
 }

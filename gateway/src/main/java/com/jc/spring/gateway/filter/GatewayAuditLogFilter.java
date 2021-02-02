@@ -25,24 +25,27 @@ public class GatewayAuditLogFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         return ReactiveSecurityContextHolder.getContext()
-                .map(securityContext -> {
-                    Object principal = securityContext.getAuthentication().getPrincipal();
-                    if (principal instanceof Jwt) {
-                        Jwt jwt = (Jwt) principal;
-                        log.info("user jwt is : {}", jwt.getClaims());
+            .switchIfEmpty(Mono.defer(() -> {
+                log.info("log securityContext is empty");
+                return Mono.empty();
+            }))
+            .map(securityContext -> {
+                Object principal = securityContext.getAuthentication().getPrincipal();
+                if (principal instanceof Jwt) {
+                    Jwt jwt = (Jwt) principal;
+                    log.info("user jwt is : {}", jwt.getClaims());
+                }
+                return Mono.empty();
+            })
+            .then(
+                chain.filter(exchange).then(Mono.defer(() -> {
+                    List<String> values = exchange.getRequest().getHeaders().get("updated");
+                    if (values == null || values.isEmpty()) {
+                        log.info("after log -----------");
                     }
                     return Mono.empty();
-                })
-                .then(chain.filter(exchange)
-                        .then(Mono.defer(() -> {
-                                    List<String> values = exchange.getRequest().getHeaders().get("updated");
-                                    if (values == null || values.isEmpty()) {
-                                        log.info("after log -----------");
-                                    }
-                                    return Mono.empty();
-                                })
-                        )
-                );
+                }))
+            );
 
 
     }

@@ -26,13 +26,13 @@ public class GatewayAuthenticationEntryPoint implements ServerAuthenticationEntr
 
     @Override
     public Mono<Void> commence(ServerWebExchange exchange, AuthenticationException e) {
-        log.info("log after1 error message: {}",e.getMessage());
+        log.info("ServerAuthenticationEntryPoint  error message: {} cause {}",e.getMessage(), e.getCause());
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
         response.getHeaders().set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         Map<String, Object> result = new HashMap<>(16);
         result.put("code", HttpStatus.UNAUTHORIZED.value());
-        result.put("msg", e.getMessage());
+        result.put("msgServerAuthenticationEntryPoint", e.getMessage());
         String res = JSONObject.toJSONString(result);
         DataBuffer buffer =  response.bufferFactory().wrap(res.getBytes(StandardCharsets.UTF_8));
         exchange.getRequest().mutate().header("updated", "yes");

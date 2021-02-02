@@ -64,6 +64,11 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-oauth2</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.alibaba.csp</groupId>
+			<artifactId>sentinel-core</artifactId>
+			<version>1.8.0</version>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

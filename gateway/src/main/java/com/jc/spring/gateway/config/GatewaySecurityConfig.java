@@ -54,7 +54,6 @@ public class GatewaySecurityConfig {
                     oAuth2ResourceServerSpec.jwt(jwtSpec -> jwtSpec.jwtDecoder(jwtDecoder()));
                     oAuth2ResourceServerSpec.authenticationEntryPoint(gatewayAuthenticationEntryPoint);
                     oAuth2ResourceServerSpec.accessDeniedHandler(oauth2AccessDeniedHandler);
-
                 }
             );
 
