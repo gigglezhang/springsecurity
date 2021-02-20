@@ -1,11 +1,19 @@
 package com.jc.spring.order.controller;
 
+import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.alibaba.csp.sentinel.util.TimeUtil;
 import com.jc.spring.order.pojo.vo.OrderInfo;
+import io.micrometer.core.instrument.util.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author jincheng.zhang
@@ -26,9 +34,13 @@ public class OrderController {
 
     @GetMapping("{id}")
     @PreAuthorize("#oauth2.hasScope('fly')")
-    public OrderInfo getOrder(@PathVariable Long id,@AuthenticationPrincipal String username){
-        OrderInfo info = new OrderInfo();
+    @SentinelResource(value = "orderId" )
+    public OrderInfo getOrder(@PathVariable Long id,@AuthenticationPrincipal String username) throws InterruptedException {
+        OrderInfo info = null;
+
+        info = new OrderInfo();
         info.setProductId(id);
+        TimeUnit.MILLISECONDS.sleep(50);
         log.info("user is {}", username);
         return info;
     }

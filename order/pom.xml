@@ -64,10 +64,32 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-oauth2</artifactId>
 		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.alibaba.csp</groupId>-->
+<!--			<artifactId>sentinel-core</artifactId>-->
+<!--			<version>1.8.1</version>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>com.alibaba.csp</groupId>-->
+<!--			<artifactId>sentinel-transport-simple-http</artifactId>-->
+<!--			<version>1.8.1</version>-->
+<!--		</dependency>-->
+		<!-- https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-starter-alibaba-sentinel -->
 		<dependency>
-			<groupId>com.alibaba.csp</groupId>
-			<artifactId>sentinel-core</artifactId>
-			<version>1.8.0</version>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+			<version>2.2.5.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.cloud</groupId>
+					<artifactId>spring-cloud-netflix-archaius</artifactId>
+				</exclusion>
+			</exclusions>
+			<version>2.2.5.RELEASE</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
