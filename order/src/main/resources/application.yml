@@ -9,3 +9,14 @@ security:
     resource:
       jwt:
         key-uri: http://localhost:9090/oauth/token_key
+spring:
+  application:
+    name: order
+  cloud:
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+        port: 8720
+logging:
+  level:
+    com.jc.spring.order: debug
