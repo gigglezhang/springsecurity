@@ -1,16 +1,15 @@
 package com.jc.spring.order.controller;
 
-import com.alibaba.csp.sentinel.Entry;
-import com.alibaba.csp.sentinel.SphU;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
-import com.alibaba.csp.sentinel.util.TimeUtil;
 import com.jc.spring.order.pojo.vo.OrderInfo;
-import io.micrometer.core.instrument.util.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.TimeUnit;
@@ -32,16 +31,23 @@ public class OrderController {
 //        return info;
 //    }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("#oauth2.hasScope('fly')")
-    @SentinelResource(value = "orderId" )
+    @SentinelResource(value = "order", blockHandler = "orderBlockHandler")
     public OrderInfo getOrder(@PathVariable Long id,@AuthenticationPrincipal String username) throws InterruptedException {
         OrderInfo info = null;
-
         info = new OrderInfo();
         info.setProductId(id);
         TimeUnit.MILLISECONDS.sleep(50);
         log.info("user is {}", username);
+        return info;
+    }
+
+    public OrderInfo orderBlockHandler(@PathVariable Long id, @AuthenticationPrincipal String username, BlockException exception){
+        log.info("blocked user is {}", username);
+        OrderInfo info = null;
+        info = new OrderInfo();
+        info.setProductId(id);
         return info;
     }
 }
