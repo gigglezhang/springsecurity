@@ -2,25 +2,38 @@ package com.jc.spring.order.config;
 
 import com.alibaba.csp.sentinel.adapter.spring.webflux.callback.WebFluxCallbackManager;
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.UrlCleaner;
+import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
+import com.alibaba.csp.sentinel.datasource.nacos.NacosDataSource;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+import com.alibaba.nacos.api.PropertyKeyConst;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @author jincheng.zhang
  * ContextRefreshedEvent 会在spring启动后执行这个Event
  */
+@ConfigurationProperties(prefix = "sentinel.nacos")
 @Component
+@Getter
+@Setter
 public class SentinelConfig implements ApplicationListener<ContextRefreshedEvent> {
-    @Override
+   /* @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         // 流控规则list
         List<FlowRule> rules = new ArrayList<>();
@@ -57,20 +70,33 @@ public class SentinelConfig implements ApplicationListener<ContextRefreshedEvent
         degradeRule.setSlowRatioThreshold(0.5);
         // 熔断时间窗口（回到半打开）单位是秒
         degradeRule.setTimeWindow(10);
-
         degradeRules.add(degradeRule);
         DegradeRuleManager.loadRules(degradeRules);
 
-//        WebFluxCallbackManager.setUrlCleaner((serverWebExchange, originUrl) ->{
-//            if(originUrl.startsWith("/order")){
-//                return "/order/*";
-//            }
-//            return originUrl;
-//        });
+    } */
 
-    }
 
-    public static class CommonBlockedHandler{
+    public String serverAddr;
+    public String groupId;
+    public String dataId;
+    public String username;
+    public String password;
+    public String namespace;
 
+    @Override
+    public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
+        Properties properties = new Properties();
+        properties.setProperty(PropertyKeyConst.SERVER_ADDR, serverAddr);
+        properties.setProperty(PropertyKeyConst.USERNAME, username);
+        properties.setProperty(PropertyKeyConst.PASSWORD, password);
+        if(namespace !=null){
+            properties.setProperty(PropertyKeyConst.NAMESPACE, namespace);
+        }
+        
+
+        ReadableDataSource<String, List<FlowRule>> flowRuleDataSource =
+                new NacosDataSource<>(properties, groupId, dataId,
+                        source-> JSON.parseObject(source, new TypeReference<List<FlowRule>>(){}));
+        FlowRuleManager.register2Property(flowRuleDataSource.getProperty());
     }
 }

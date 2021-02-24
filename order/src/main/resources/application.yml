@@ -17,6 +17,17 @@ spring:
       transport:
         dashboard: localhost:8080
         port: 8720
+      log:
+        dir: order/sentinel-log
 logging:
   level:
     com.jc.spring.order: debug
+
+
+sentinel:
+  nacos:
+    server-addr: 10.1.21.137:8848
+    dataId: order-flow-rules
+    groupId: SENTINEL_GROUP
+    username: nacos
+    password: nacos
